@@ -10,5 +10,22 @@
 }
 
 .grid-list {
-  margin-bottom: 1px;
+  margin-bottom: 0px;
+}
+
+.tile-border {
+  border: 2px solid;
+}
+
+.top-border {
+  border-top: 0px !important;
+}
+.btm-border {
+  border-bottom: 0px !important;
+}
+.lft-border {
+  border-left: 0px !important;
+}
+.rgt-border {
+  border-right: 0px !important;
 }
