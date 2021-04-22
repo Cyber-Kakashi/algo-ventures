@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 import { HomeComponent } from './home.component';
 import { HomeRoutingModule } from './home-routing.module';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MazeTraversalComponent } from './maze-traversal/maze-traversal.component';
-import { CommonModule } from '@angular/common';
+
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatGridListModule } from '@angular/material/grid-list';
+
 
 @NgModule({
   declarations: [
@@ -14,7 +17,8 @@ import { CommonModule } from '@angular/common';
   imports: [
     CommonModule,
     MatSidenavModule,
-    HomeRoutingModule
+    MatGridListModule,
+    HomeRoutingModule,
   ],
   providers: [],
   bootstrap: [HomeComponent],

@@ -4,11 +4,15 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <div class="row">
-      <div class="col-lg-12">
-        <button mat-button (click)="sidenav.toggle()">Toggle</button>
+    <div class="cntnr">
+      <div class="nav-btn">
+        <button mat-button class="navigation-button" (click)="sidenav.toggle()">EXPLORE</button>
       </div>
-      <div class="col-lg-6"><router-outlet></router-outlet></div>
+      <div class="content">
+        <div class="row">
+          <div class="col-lg-12"><router-outlet></router-outlet></div>
+        </div>
+      </div>
     </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

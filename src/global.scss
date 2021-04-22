@@ -1,0 +1,21 @@
+.navigation-button {
+  border: none;
+  outline: none;
+  width: 100%;
+  word-break: break-all;
+  height: 100%;
+  color: var(--gray);
+}
+
+.navigation-button:hover {
+  color: white;
+  background-color: black;
+}
+
+.pd-rt-12 {
+  padding-right: 12px;
+}
+
+.pd-lt-12 {
+  padding-left: 12px;
+}
