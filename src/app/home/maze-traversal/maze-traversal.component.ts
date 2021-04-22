@@ -4,7 +4,6 @@ export interface Tile {
   color: string;
   cols: number;
   rows: number;
-  text: string;
 }
 @Component({
   selector: 'app-maze-traversal',
@@ -12,16 +11,25 @@ export interface Tile {
   styleUrls: ['./maze-traversal.component.scss']
 })
 export class MazeTraversalComponent implements OnInit {
-  tiles: Tile[] = [
-    {text: 'One', cols: 1, rows: 1, color: 'lightblue'},
-    {text: 'Two', cols: 1, rows: 1, color: 'lightgreen'},
-    {text: 'Three', cols: 1, rows: 1, color: 'lightpink'},
-    {text: 'Four', cols: 1, rows: 1, color: '#DDBDF1'},
-  ];
-
+  columns: number = 50;
+  rows: number = 35;
+  tiles: Tile[] = [];
+  startPoint: Tile;
+  endPoint: Tile;
   constructor() { }
 
   ngOnInit(): void {
+    let i = 0;
+    let j = 0;
+    for (i = 0; i < this.columns; i++) {
+      for (j = 0; j < this.rows; j++) {
+        this.tiles.push({
+          cols: 1,
+          rows: 1,
+          color: 'gray'
+        });
+      }
+    }
   }
 
 }

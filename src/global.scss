@@ -4,12 +4,12 @@
   width: 100%;
   word-break: break-all;
   height: 100%;
-  color: var(--gray);
+  color: white;
+  background-color: black;
 }
 
 .navigation-button:hover {
-  color: white;
-  background-color: black;
+  color: gray;
 }
 
 .pd-rt-12 {

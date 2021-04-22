@@ -1,13 +1,13 @@
 @import '../../global.scss';
 
-.example-container {
+.navigation-container {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   mat-sidenav {
-    background-color: var(--light-gray);
+    background-color: black;
   }
 }
 
@@ -18,7 +18,6 @@
 .nav-btn {
   height: 100vh;
   width: 28px;
-  margin-right: 28px;
 }
 
 .content {

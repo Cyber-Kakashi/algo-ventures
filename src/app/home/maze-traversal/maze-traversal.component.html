@@ -1,9 +1,15 @@
-<mat-grid-list cols="4" rowHeight="100px">
-  <mat-grid-tile
-      *ngFor="let tile of tiles"
-      [colspan]="tile.cols"
-      [rowspan]="tile.rows"
-      [style.background]="tile.color">
-    {{tile.text}}
-  </mat-grid-tile>
-</mat-grid-list>
+
+  <div class="col-lg-12 title">
+    THE MAZE
+  </div>
+  <div class="col-lg-12">
+    <mat-grid-list [cols]="columns" rowHeight="17px">
+      <mat-grid-tile
+          *ngFor="let tile of tiles"
+          [colspan]="tile.cols"
+          [rowspan]="tile.rows"
+          [style.background]="tile.color">
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+
