@@ -4,12 +4,28 @@
   width: 100%;
   word-break: break-all;
   height: 100%;
-  color: white;
-  background-color: black;
+  color: var(--white);
+  background-color: var(--black);
 }
 
 .navigation-button:hover {
-  color: gray;
+  color: var(--gray);
+}
+
+.regular-button {
+  background-color: var(---white);
+  border: 4px solid var(--black);
+  font-size: 19px;
+  vertical-align: text-bottom;
+}
+
+.regular-button:hover {
+  background-color: var(--black);
+  color: var(--light-gray);
+}
+
+.text-right {
+  float: right;
 }
 
 .pd-rt-12 {
