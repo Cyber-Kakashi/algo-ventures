@@ -4,7 +4,6 @@ import { AppComponent } from '../app.component';
 import { HomeComponent } from './home.component';
 import { MazeTraversalComponent } from './maze-traversal/maze-traversal.component';
 
-
 const routes: Routes = [
   {
     path: '',
@@ -14,9 +13,9 @@ const routes: Routes = [
       {
         path: 'maze',
         component: MazeTraversalComponent,
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];
 
 @NgModule({

@@ -8,12 +8,8 @@ import { MazeTraversalComponent } from './maze-traversal/maze-traversal.componen
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatGridListModule } from '@angular/material/grid-list';
 
-
 @NgModule({
-  declarations: [
-    HomeComponent,
-    MazeTraversalComponent
-  ],
+  declarations: [HomeComponent, MazeTraversalComponent],
   imports: [
     CommonModule,
     MatSidenavModule,
@@ -22,8 +18,6 @@ import { MatGridListModule } from '@angular/material/grid-list';
   ],
   providers: [],
   bootstrap: [HomeComponent],
-  exports: [
-    HomeComponent
-  ]
+  exports: [HomeComponent],
 })
-export class HomeModule { }
+export class HomeModule {}

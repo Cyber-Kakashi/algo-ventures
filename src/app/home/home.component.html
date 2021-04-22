@@ -1,12 +1,12 @@
 <mat-sidenav-container class="navigation-container">
-  <mat-sidenav #sidenav mode="over">
-    Add navigations here
-  </mat-sidenav>
+  <mat-sidenav #sidenav mode="over"> Add navigations here </mat-sidenav>
 
   <mat-sidenav-content>
     <div class="cntnr">
       <div class="nav-btn">
-        <button mat-button class="navigation-button" (click)="sidenav.toggle()">EXPLORE</button>
+        <button mat-button class="navigation-button" (click)="sidenav.toggle()">
+          EXPLORE
+        </button>
       </div>
       <div class="content">
         <router-outlet></router-outlet>

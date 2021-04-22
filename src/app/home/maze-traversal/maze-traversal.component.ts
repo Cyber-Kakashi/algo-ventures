@@ -15,12 +15,12 @@ export enum Color {
   white = 'white',
   gray = 'gray',
   green = 'green',
-  red = 'darkred'
+  red = 'darkred',
 }
 @Component({
   selector: 'app-maze-traversal',
   templateUrl: './maze-traversal.component.html',
-  styleUrls: ['./maze-traversal.component.scss']
+  styleUrls: ['./maze-traversal.component.scss'],
 })
 export class MazeTraversalComponent implements OnInit {
   columns = 35;
@@ -31,7 +31,7 @@ export class MazeTraversalComponent implements OnInit {
   endTile: Tile;
   count = 0;
   speed = 5;
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.resetGrid();
@@ -66,7 +66,7 @@ export class MazeTraversalComponent implements OnInit {
     if (this.startTile?.x === tile.x && this.startTile?.y === tile.y) {
     } else {
       if (tile.color === Color.gray) {
-        this.startTile ? this.startTile.color = Color.gray : console.log();
+        this.startTile ? (this.startTile.color = Color.gray) : console.log();
         tile.color = Color.green;
         this.startTile = tile;
       }
@@ -78,7 +78,7 @@ export class MazeTraversalComponent implements OnInit {
     if (this.endTile?.x === tile.x && this.endTile?.y === tile.y) {
     } else {
       if (tile.color === Color.gray) {
-        this.endTile ? this.endTile.color = Color.gray : console.log();
+        this.endTile ? (this.endTile.color = Color.gray) : console.log();
         tile.color = Color.red;
         this.endTile = tile;
       }
@@ -97,7 +97,10 @@ export class MazeTraversalComponent implements OnInit {
     await this.depthFirstSearch(startTile);
   }
 
-  async depthFirstSearch(startTile: Tile, traverseDirection = ''): Promise<any>  {
+  async depthFirstSearch(
+    startTile: Tile,
+    traverseDirection = ''
+  ): Promise<any> {
     if (startTile.color !== Color.white) {
       const temp = [];
       startTile.color = Color.white;
@@ -112,36 +115,48 @@ export class MazeTraversalComponent implements OnInit {
           startTile.rgt = true;
         }
       }
-      if (startTile.y + 1 < this.columns && this.checkTile(startTile.y + 1, startTile.x)) {
+      if (
+        startTile.y + 1 < this.columns &&
+        this.checkTile(startTile.y + 1, startTile.x)
+      ) {
         startTile.btm = true;
         temp.push({
           x: startTile.x,
           y: startTile.y + 1,
-          d: 'd'
+          d: 'd',
         });
       }
-      if (startTile.x - 1 >= 0 && this.checkTile(startTile.y, startTile.x - 1)) {
+      if (
+        startTile.x - 1 >= 0 &&
+        this.checkTile(startTile.y, startTile.x - 1)
+      ) {
         startTile.lft = true;
         temp.push({
           x: startTile.x - 1,
           y: startTile.y,
-          d: 'l'
+          d: 'l',
         });
       }
-      if (startTile.x + 1 < this.rows && this.checkTile(startTile.y, startTile.x + 1)) {
+      if (
+        startTile.x + 1 < this.rows &&
+        this.checkTile(startTile.y, startTile.x + 1)
+      ) {
         startTile.rgt = true;
         temp.push({
           x: startTile.x + 1,
           y: startTile.y,
-          d: 'r'
+          d: 'r',
         });
       }
-      if (startTile.y - 1 >= 0 && this.checkTile(startTile.y - 1, startTile.x)) {
+      if (
+        startTile.y - 1 >= 0 &&
+        this.checkTile(startTile.y - 1, startTile.x)
+      ) {
         startTile.top = true;
         temp.push({
           x: startTile.x,
           y: startTile.y - 1,
-          d: 'u'
+          d: 'u',
         });
       }
       if (!(++this.count % this.speed)) {
@@ -152,7 +167,10 @@ export class MazeTraversalComponent implements OnInit {
         let indx = Math.random() * temp.length;
         indx = Math.round(indx);
         if (temp[indx]) {
-          await this.depthFirstSearch(this.tiles[temp[indx]?.y][temp[indx]?.x], temp[indx]?.d);
+          await this.depthFirstSearch(
+            this.tiles[temp[indx]?.y][temp[indx]?.x],
+            temp[indx]?.d
+          );
           temp.splice(indx, 1);
         }
       }
@@ -167,7 +185,6 @@ export class MazeTraversalComponent implements OnInit {
   }
 
   async delay(ms): Promise<any> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
-
 }

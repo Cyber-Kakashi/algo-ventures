@@ -8,9 +8,8 @@ describe('MazeTraversalComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MazeTraversalComponent ]
-    })
-    .compileComponents();
+      declarations: [MazeTraversalComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
