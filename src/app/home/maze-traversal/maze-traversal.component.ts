@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 export interface Tile {
   color: string;
   cols: number;
@@ -30,6 +29,8 @@ export class MazeTraversalComponent implements OnInit {
   list = [];
   startTile: Tile;
   endTile: Tile;
+  count = 0;
+  speed = 5;
   constructor() { }
 
   ngOnInit(): void {
@@ -62,7 +63,6 @@ export class MazeTraversalComponent implements OnInit {
   }
 
   seTtartTile(tile: Tile): void {
-    console.log(tile);
     if (this.startTile?.x === tile.x && this.startTile?.y === tile.y) {
     } else {
       if (tile.color === Color.gray) {
@@ -85,20 +85,20 @@ export class MazeTraversalComponent implements OnInit {
     }
   }
 
-  startGame(): void {
+  async startGame(): Promise<any> {
     if (this.startTile && this.endTile) {
-      this.drawMaze(this.startTile, this.endTile);
+      await this.drawMaze(this.startTile, this.endTile);
       this.startTile.color = Color.green;
       this.endTile.color = Color.red;
     }
   }
 
-  drawMaze(startTile: Tile, end: Tile): void {
-    this.depthFirstSearch(startTile);
+  async drawMaze(startTile: Tile, end: Tile): Promise<any> {
+    await this.depthFirstSearch(startTile);
   }
 
-  depthFirstSearch(startTile: Tile, traverseDirection = ''): void  {
-    if (startTile.color === Color.green || startTile.color === Color.gray || startTile.color === Color.red) {
+  async depthFirstSearch(startTile: Tile, traverseDirection = ''): Promise<any>  {
+    if (startTile.color !== Color.white) {
       const temp = [];
       startTile.color = Color.white;
       if (traverseDirection.length) {
@@ -119,7 +119,6 @@ export class MazeTraversalComponent implements OnInit {
           y: startTile.y + 1,
           d: 'd'
         });
-        // this.depthFirstSearch(this.tiles[startTile.y + 1][startTile.x], 'd');
       }
       if (startTile.x - 1 >= 0 && this.checkTile(startTile.y, startTile.x - 1)) {
         startTile.lft = true;
@@ -128,7 +127,6 @@ export class MazeTraversalComponent implements OnInit {
           y: startTile.y,
           d: 'l'
         });
-        // this.depthFirstSearch(this.tiles[startTile.y][startTile.x - 1], 'l');
       }
       if (startTile.x + 1 < this.rows && this.checkTile(startTile.y, startTile.x + 1)) {
         startTile.rgt = true;
@@ -137,7 +135,6 @@ export class MazeTraversalComponent implements OnInit {
           y: startTile.y,
           d: 'r'
         });
-        // this.depthFirstSearch(this.tiles[startTile.y][startTile.x + 1], 'r');
       }
       if (startTile.y - 1 >= 0 && this.checkTile(startTile.y - 1, startTile.x)) {
         startTile.top = true;
@@ -146,13 +143,16 @@ export class MazeTraversalComponent implements OnInit {
           y: startTile.y - 1,
           d: 'u'
         });
-        // this.depthFirstSearch(this.tiles[startTile.y - 1][startTile.x], 'u');
+      }
+      if (!(++this.count % this.speed)) {
+        const prms = await this.delay(0);
+        this.count = 1;
       }
       while (temp.length) {
         let indx = Math.random() * temp.length;
         indx = Math.round(indx);
         if (temp[indx]) {
-          this.depthFirstSearch(this.tiles[temp[indx]?.y][temp[indx]?.x], temp[indx]?.d);
+          await this.depthFirstSearch(this.tiles[temp[indx]?.y][temp[indx]?.x], temp[indx]?.d);
           temp.splice(indx, 1);
         }
       }
@@ -160,9 +160,14 @@ export class MazeTraversalComponent implements OnInit {
   }
 
   checkTile(y: number, x: number): boolean {
-    if (this.tiles[y][x].color === Color.gray || this.tiles[y][x].color === Color.red || this.tiles[y][x].color === Color.green) {
+    if (this.tiles[y][x].color !== Color.white) {
       return true;
     }
     return false;
   }
+
+  async delay(ms): Promise<any> {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
 }
