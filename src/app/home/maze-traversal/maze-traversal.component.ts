@@ -1,6 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 export interface Tile {
-  color: string;
   cols: number;
   rows: number;
   dist: number;
@@ -11,6 +10,11 @@ export interface Tile {
   rgt: boolean;
   lft: boolean;
   text: string;
+}
+
+export enum Status {
+  initialized = -1,
+  visited = -9,
 }
 
 export enum Color {
@@ -32,12 +36,15 @@ export class MazeTraversalComponent implements OnInit {
   columns = 35;
   rows = 80;
   tiles: Array<Array<Tile>> = [];
+  mazeTiles: Array<Array<Tile>> = [];
+  distanceTiles: Array<Array<Tile>> = [];
   list = [];
   startTile: Tile;
   endTile: Tile;
   count = 0;
-  speed = 10;
+  speed = 60;
   maxDist: number;
+  statisticsTile: Tile;
   inProcess = false;
 
   constructor(private cd: ChangeDetectorRef) {}
@@ -54,52 +61,56 @@ export class MazeTraversalComponent implements OnInit {
     this.inProcess = false;
   }
 
-  resetGrid(): void {
-    this.processStart();
-    let i = 0;
-    let j = 0;
-    this.tiles = [];
-    for (i = 0; i < this.columns; i++) {
-      for (j = 0; j < this.rows; j++) {
-        this.list.push({
-          cols: 1,
-          rows: 1,
-          color: Color.gray,
-          y: i,
-          x: j,
-          dist: -1,
-          top: 0,
-          btm: 0,
-          rgt: 0,
-          lft: 0,
-          text: '',
-        });
-      }
-      this.tiles.push(this.list);
-      this.list = [];
-    }
-    this.startTile = this.tiles[0][0];
-    this.endTile = this.tiles[this.columns - 1][this.rows - 1];
-    this.maxDist = undefined;
-    this.processEnd();
-  }
-
-  seTtartTile(tile: Tile): void {
-    console.log(tile);
-    if (this.startTile?.x === tile.x && this.startTile?.y === tile.y) {
-    } else {
-      if (tile.color === Color.gray && !this.inProcess) {
-        this.startTile = tile;
+  async setStartTile(tile: Tile): Promise<any> {
+    if (tile.x !== this.endTile.x || tile.y !== this.endTile.y) {
+      this.startTile = tile;
+      if (this.distanceTiles?.length) {
+        this.startTile = this.newTile(
+          tile.x,
+          tile.y,
+          this.distanceTiles[tile.y][tile.x].dist,
+          tile.top,
+          tile.btm,
+          tile.rgt,
+          tile.lft
+        );
+        this.processStart();
+        this.tiles = this.deepCloneArray(this.distanceTiles);
+        await this.drawPath(this.startTile);
+        this.processEnd();
       }
     }
   }
 
-  setEndTile(tile: Tile, event): void {
+  async setEndTile(tile: Tile, event): Promise<any> {
     event.preventDefault();
-    if (this.endTile?.x === tile.x && this.endTile?.y === tile.y) {
-    } else {
-      if (tile.color === Color.gray && !this.inProcess) {
-        this.endTile = tile;
+    if (this.startTile?.x !== tile.x || this.startTile?.y !== tile.y) {
+      this.endTile = tile;
+      if (this.mazeTiles?.length) {
+        this.endTile = this.newTile(
+          tile.x,
+          tile.y,
+          Status.visited,
+          tile.top,
+          tile.btm,
+          tile.rgt,
+          tile.lft
+        );
+        this.processStart();
+        this.tiles = this.deepCloneArray(this.mazeTiles);
+        await this.calculateDistance(this.endTile);
+        this.distanceTiles = this.deepCloneArray(this.tiles);
+        this.startTile = this.newTile(
+          this.startTile.x,
+          this.startTile.y,
+          this.distanceTiles[this.startTile.y][this.startTile.x].dist,
+          this.startTile.top,
+          this.startTile.btm,
+          this.startTile.rgt,
+          this.startTile.lft
+        );
+        await this.drawPath(this.startTile);
+        this.processEnd();
       }
     }
   }
@@ -109,68 +120,36 @@ export class MazeTraversalComponent implements OnInit {
       this.processStart();
       if (this.startTile && this.endTile) {
         await this.drawMaze(this.startTile);
+        this.mazeTiles = this.deepCloneArray(this.tiles);
         await this.calculateDistance(this.endTile);
+        this.distanceTiles = this.deepCloneArray(this.tiles);
         await this.drawPath(this.startTile);
       }
       this.processEnd();
     }
   }
 
-  async drawPath(startTile: Tile): Promise<any> {
-    let tempTile: Tile;
-    let minTileDist = this.maxDist + 1;
-    startTile.dist = -9;
-    if (!(++this.count % this.speed)) {
-      const prms = await this.delay(0);
-      this.count = 1;
-    }
-    if (
-      startTile.top &&
-      startTile.y - 1 >= 0 &&
-      this.tiles[startTile.y - 1][startTile.x].dist >= 0 &&
-      this.tiles[startTile.y - 1][startTile.x].btm
-    ) {
-      if (minTileDist > this.tiles[startTile.y - 1][startTile.x].dist) {
-        minTileDist = this.tiles[startTile.y - 1][startTile.x].dist;
-        tempTile = this.tiles[startTile.y - 1][startTile.x];
+  // Remember that x => j and y => i
+  resetGrid(): void {
+    this.processStart();
+    let i = 0;
+    let j = 0;
+    this.tiles = [];
+    for (i = 0; i < this.columns; i++) {
+      for (j = 0; j < this.rows; j++) {
+        this.list.push(
+          this.newTile(j, i, Status.initialized, false, false, false, false, '')
+        );
       }
+      this.tiles.push(this.list);
+      this.list = [];
     }
-    if (
-      startTile.rgt &&
-      startTile.x + 1 < this.rows &&
-      this.tiles[startTile.y][startTile.x + 1].dist >= 0 &&
-      this.tiles[startTile.y][startTile.x + 1].lft
-    ) {
-      if (minTileDist > this.tiles[startTile.y][startTile.x + 1].dist) {
-        minTileDist = this.tiles[startTile.y][startTile.x + 1].dist;
-        tempTile = this.tiles[startTile.y][startTile.x + 1];
-      }
-    }
-    if (
-      startTile.btm &&
-      startTile.y + 1 < this.columns &&
-      this.tiles[startTile.y + 1][startTile.x].dist >= 0 &&
-      this.tiles[startTile.y + 1][startTile.x].top
-    ) {
-      if (minTileDist > this.tiles[startTile.y + 1][startTile.x].dist) {
-        minTileDist = this.tiles[startTile.y + 1][startTile.x].dist;
-        tempTile = this.tiles[startTile.y + 1][startTile.x];
-      }
-    }
-    if (
-      startTile.lft &&
-      startTile.x - 1 >= 0 &&
-      this.tiles[startTile.y][startTile.x - 1].dist >= 0 &&
-      this.tiles[startTile.y][startTile.x - 1].rgt
-    ) {
-      if (minTileDist > this.tiles[startTile.y][startTile.x - 1].dist) {
-        minTileDist = this.tiles[startTile.y][startTile.x - 1].dist;
-        tempTile = this.tiles[startTile.y][startTile.x - 1];
-      }
-    }
-    if (tempTile) {
-      await this.drawPath(tempTile);
-    }
+    this.mazeTiles = undefined;
+    this.distanceTiles = undefined;
+    this.startTile = this.tiles[0][0];
+    this.endTile = this.tiles[this.columns - 1][this.rows - 1];
+    this.maxDist = undefined;
+    this.processEnd();
   }
 
   async drawMaze(startTile: Tile): Promise<any> {
@@ -181,68 +160,13 @@ export class MazeTraversalComponent implements OnInit {
     await this.assignDistance(endTile, 0);
   }
 
-  async assignDistance(endTile: Tile, dist: number): Promise<any> {
-    if (endTile.dist === -1) {
-      if (!(++this.count % this.speed)) {
-        const prms = await this.delay(0);
-        this.count = 1;
-      }
-      endTile.dist = dist;
-      this.maxDist = this.maxDist ? Math.max(this.maxDist, dist) : dist;
-      if (
-        endTile.top &&
-        endTile.y - 1 >= 0 &&
-        this.tiles[endTile.y - 1][endTile.x].dist === -1 &&
-        this.tiles[endTile.y - 1][endTile.x].btm
-      ) {
-        await this.assignDistance(
-          this.tiles[endTile.y - 1][endTile.x],
-          dist + 1
-        );
-      }
-      if (
-        endTile.rgt &&
-        endTile.x + 1 < this.rows &&
-        this.tiles[endTile.y][endTile.x + 1].dist === -1 &&
-        this.tiles[endTile.y][endTile.x + 1].lft
-      ) {
-        await this.assignDistance(
-          this.tiles[endTile.y][endTile.x + 1],
-          dist + 1
-        );
-      }
-      if (
-        endTile.btm &&
-        endTile.y + 1 < this.columns &&
-        this.tiles[endTile.y + 1][endTile.x].dist === -1 &&
-        this.tiles[endTile.y + 1][endTile.x].top
-      ) {
-        await this.assignDistance(
-          this.tiles[endTile.y + 1][endTile.x],
-          dist + 1
-        );
-      }
-      if (
-        endTile.lft &&
-        endTile.x - 1 >= 0 &&
-        this.tiles[endTile.y][endTile.x - 1].dist === -1 &&
-        this.tiles[endTile.y][endTile.x - 1].rgt
-      ) {
-        await this.assignDistance(
-          this.tiles[endTile.y][endTile.x - 1],
-          dist + 1
-        );
-      }
-    }
-  }
-
   async depthFirstSearch(
     startTile: Tile,
     traverseDirection = ''
   ): Promise<any> {
-    if (startTile.color !== Color.white) {
+    if (startTile.dist !== Status.visited) {
       const temp = [];
-      startTile.color = Color.white;
+      startTile.dist = Status.visited;
       if (traverseDirection.length) {
         if (traverseDirection === 'u') {
           startTile.btm = true;
@@ -316,14 +240,135 @@ export class MazeTraversalComponent implements OnInit {
     }
   }
 
+  async assignDistance(endTile: Tile, dist: number): Promise<any> {
+    if (endTile.dist === Status.visited) {
+      if (!(++this.count % this.speed)) {
+        const prms = await this.delay(0);
+        this.count = 1;
+      }
+      endTile.dist = dist;
+      this.maxDist = this.maxDist ? Math.max(this.maxDist, dist) : dist;
+      if (
+        endTile.top &&
+        endTile.y - 1 >= 0 &&
+        this.tiles[endTile.y - 1][endTile.x].dist === Status.visited &&
+        this.tiles[endTile.y - 1][endTile.x].btm
+      ) {
+        await this.assignDistance(
+          this.tiles[endTile.y - 1][endTile.x],
+          dist + 1
+        );
+      }
+      if (
+        endTile.rgt &&
+        endTile.x + 1 < this.rows &&
+        this.tiles[endTile.y][endTile.x + 1].dist === Status.visited &&
+        this.tiles[endTile.y][endTile.x + 1].lft
+      ) {
+        await this.assignDistance(
+          this.tiles[endTile.y][endTile.x + 1],
+          dist + 1
+        );
+      }
+      if (
+        endTile.btm &&
+        endTile.y + 1 < this.columns &&
+        this.tiles[endTile.y + 1][endTile.x].dist === Status.visited &&
+        this.tiles[endTile.y + 1][endTile.x].top
+      ) {
+        await this.assignDistance(
+          this.tiles[endTile.y + 1][endTile.x],
+          dist + 1
+        );
+      }
+      if (
+        endTile.lft &&
+        endTile.x - 1 >= 0 &&
+        this.tiles[endTile.y][endTile.x - 1].dist === Status.visited &&
+        this.tiles[endTile.y][endTile.x - 1].rgt
+      ) {
+        await this.assignDistance(
+          this.tiles[endTile.y][endTile.x - 1],
+          dist + 1
+        );
+      }
+    }
+  }
+
+  async drawPath(startTile: Tile): Promise<any> {
+    let tempTile: Tile;
+    let minTileDist = startTile.dist;
+    startTile.dist = Status.visited;
+    if (!(++this.count % this.speed)) {
+      await this.delay(0);
+      this.count = 1;
+    }
+    if (
+      startTile.top &&
+      startTile.y - 1 >= 0 &&
+      this.tiles[startTile.y - 1][startTile.x].dist >= 0 &&
+      this.tiles[startTile.y - 1][startTile.x].btm
+    ) {
+      if (minTileDist > this.tiles[startTile.y - 1][startTile.x].dist) {
+        minTileDist = this.tiles[startTile.y - 1][startTile.x].dist;
+        tempTile = this.tiles[startTile.y - 1][startTile.x];
+      }
+    }
+    if (
+      startTile.rgt &&
+      startTile.x + 1 < this.rows &&
+      this.tiles[startTile.y][startTile.x + 1].dist >= 0 &&
+      this.tiles[startTile.y][startTile.x + 1].lft
+    ) {
+      if (minTileDist > this.tiles[startTile.y][startTile.x + 1].dist) {
+        minTileDist = this.tiles[startTile.y][startTile.x + 1].dist;
+        tempTile = this.tiles[startTile.y][startTile.x + 1];
+      }
+    }
+    if (
+      startTile.btm &&
+      startTile.y + 1 < this.columns &&
+      this.tiles[startTile.y + 1][startTile.x].dist >= 0 &&
+      this.tiles[startTile.y + 1][startTile.x].top
+    ) {
+      if (minTileDist > this.tiles[startTile.y + 1][startTile.x].dist) {
+        minTileDist = this.tiles[startTile.y + 1][startTile.x].dist;
+        tempTile = this.tiles[startTile.y + 1][startTile.x];
+      }
+    }
+    if (
+      startTile.lft &&
+      startTile.x - 1 >= 0 &&
+      this.tiles[startTile.y][startTile.x - 1].dist >= 0 &&
+      this.tiles[startTile.y][startTile.x - 1].rgt
+    ) {
+      if (minTileDist > this.tiles[startTile.y][startTile.x - 1].dist) {
+        minTileDist = this.tiles[startTile.y][startTile.x - 1].dist;
+        tempTile = this.tiles[startTile.y][startTile.x - 1];
+      }
+    }
+    if (
+      tempTile &&
+      (tempTile.x !== this.endTile.x || tempTile.y !== this.endTile.y)
+    ) {
+      await this.drawPath(tempTile);
+    }
+  }
+
   checkTile(y: number, x: number): boolean {
-    if (this.tiles[y][x].color !== Color.white) {
+    if (this.tiles[y][x].dist !== Status.visited) {
       return true;
     }
     return false;
   }
 
   setColor(tile: Tile): string {
+    if (tile.x === this.startTile?.x && tile.y === this.startTile?.y) {
+      return Color.green;
+    }
+    if (tile.x === this.endTile?.x && tile.y === this.endTile?.y) {
+      return Color.red;
+    }
     if (tile.dist >= 0) {
       if (tile.dist < this.maxDist / 4) {
         return Color.lightgreen;
@@ -341,12 +386,44 @@ export class MazeTraversalComponent implements OnInit {
         return Color.lightpink;
       }
     } else {
-      if (tile.dist === -1) {
+      if (tile.dist === Status.initialized) {
         return Color.gray;
-      } else if (tile.dist === -9) {
+      } else if (tile.dist === Status.visited) {
         return Color.white;
       }
     }
+  }
+
+  deepCloneArray(array: Array<Array<Tile>>): Array<Array<Tile>> {
+    return array.map((x) => {
+      let list: Array<Tile>;
+      list = x.map((y) => Object.assign({}, y));
+      return list;
+    });
+  }
+
+  newTile(
+    x: number,
+    y: number,
+    dist: number,
+    top = false,
+    btm = false,
+    rgt = false,
+    lft = false,
+    text = ''
+  ): Tile {
+    return {
+      cols: 1,
+      rows: 1,
+      y,
+      x,
+      dist,
+      top,
+      btm,
+      rgt,
+      lft,
+      text,
+    };
   }
 
   async delay(ms): Promise<any> {

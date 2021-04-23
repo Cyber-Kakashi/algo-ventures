@@ -1,6 +1,6 @@
-<div class="col-lg-12 title">
-  THE MAZE
-  <br /><br />
+<div class="col-lg-12">
+  <div class="row title">THE MAZE</div>
+  <br />
   <div class="row">
     <div class="col-lg-6">
       <button
@@ -18,14 +18,13 @@
         (click)="resetGrid()"
       >
         RESET</button
-      >&nbsp; ({{ startTile.y }}, {{ startTile.x }}) - ({{ endTile.y }},
-      {{ endTile.x }})
+      >&nbsp;
     </div>
     <div class="col-lg-6">
       <div class="speed-container">
         <mat-slider
           class="speed-slider"
-          max="40"
+          max="60"
           min="1"
           [(ngModel)]="speed"
         ></mat-slider>
@@ -53,11 +52,15 @@
         [class.btm-border]="tile.btm"
         [class.rgt-border]="tile.rgt"
         [class.lft-border]="tile.lft"
-        (click)="seTtartTile(tile)"
+        (click)="setStartTile(tile)"
         (contextmenu)="setEndTile(tile, $event)"
         [style.background]="setColor(tile)"
       >
       </mat-grid-tile>
     </mat-grid-list>
   </div>
+</div>
+
+<div class="col-lg-12">
+  ({{ startTile.y }}, {{ startTile.x }}) - ({{ endTile.y }}, {{ endTile.x }})
 </div>
