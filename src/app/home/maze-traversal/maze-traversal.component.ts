@@ -1,14 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 export interface Tile {
   color: string;
   cols: number;
   rows: number;
+  dist: number;
   x: number;
   y: number;
   top: boolean;
   btm: boolean;
   rgt: boolean;
   lft: boolean;
+  text: string;
 }
 
 export enum Color {
@@ -16,6 +18,10 @@ export enum Color {
   gray = 'gray',
   green = 'green',
   red = 'darkred',
+  lightgreen = '#c5f0c5',
+  lighblue = 'lightblue',
+  lightviolet= '#ddbdf1',
+  lightpink= 'lightpink',
 }
 @Component({
   selector: 'app-maze-traversal',
@@ -31,8 +37,10 @@ export class MazeTraversalComponent implements OnInit {
   endTile: Tile;
   count = 0;
   speed = 10;
+  maxDist: number;
   inProcess = false;
-  constructor() {}
+
+  constructor(private cd: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.resetGrid();
@@ -59,26 +67,28 @@ export class MazeTraversalComponent implements OnInit {
           color: Color.gray,
           y: i,
           x: j,
+          dist: -1,
           top: 0,
           btm: 0,
           rgt: 0,
           lft: 0,
+          text: '',
         });
       }
       this.tiles.push(this.list);
       this.list = [];
     }
-    this.startTile = undefined;
-    this.endTile = undefined;
+    this.startTile = this.tiles[0][0];
+    this.endTile = this.tiles[this.columns - 1][this.rows - 1];
+    this.maxDist = undefined;
     this.processEnd();
   }
 
   seTtartTile(tile: Tile): void {
+    console.log(tile);
     if (this.startTile?.x === tile.x && this.startTile?.y === tile.y) {
     } else {
-      if (tile.color === Color.gray  && !this.inProcess) {
-        this.startTile ? (this.startTile.color = Color.gray) : console.log();
-        tile.color = Color.green;
+      if (tile.color === Color.gray && !this.inProcess) {
         this.startTile = tile;
       }
     }
@@ -89,8 +99,6 @@ export class MazeTraversalComponent implements OnInit {
     if (this.endTile?.x === tile.x && this.endTile?.y === tile.y) {
     } else {
       if (tile.color === Color.gray && !this.inProcess) {
-        this.endTile ? (this.endTile.color = Color.gray) : console.log();
-        tile.color = Color.red;
         this.endTile = tile;
       }
     }
@@ -100,7 +108,9 @@ export class MazeTraversalComponent implements OnInit {
     if (!this.inProcess) {
       this.processStart();
       if (this.startTile && this.endTile) {
-        await this.drawMaze(this.startTile, this.endTile);
+        await this.drawMaze(this.startTile);
+        await this.calculateDistance(this.endTile);
+        console.log(this.maxDist);
         this.startTile.color = Color.green;
         this.endTile.color = Color.red;
       }
@@ -108,8 +118,55 @@ export class MazeTraversalComponent implements OnInit {
     }
   }
 
-  async drawMaze(startTile: Tile, end: Tile): Promise<any> {
+  async drawMaze(startTile: Tile): Promise<any> {
     await this.depthFirstSearch(startTile);
+  }
+
+  async calculateDistance(endTile: Tile): Promise<any> {
+    await this.assignDistance(endTile, 0);
+  }
+
+  async assignDistance(endTile: Tile, dist: number): Promise<any> {
+    if (endTile.dist === -1) {
+      if (!(++this.count % this.speed)) {
+        const prms = await this.delay(0);
+        this.count = 1;
+      }
+      endTile.dist = dist;
+      this.maxDist = this.maxDist ? Math.max(this.maxDist, dist) : dist;
+      if (
+        endTile.top &&
+        endTile.y - 1 >= 0 &&
+        this.tiles[endTile.y - 1][endTile.x].dist === -1 &&
+        this.tiles[endTile.y - 1][endTile.x].btm
+      ) {
+        await this.assignDistance(this.tiles[endTile.y - 1][endTile.x], dist + 1);
+      }
+      if (
+        endTile.rgt &&
+        endTile.x + 1 < this.rows &&
+        this.tiles[endTile.y][endTile.x + 1].dist === -1 &&
+        this.tiles[endTile.y][endTile.x + 1].lft
+      ) {
+        await this.assignDistance(this.tiles[endTile.y][endTile.x + 1], dist + 1);
+      }
+      if (
+        endTile.btm &&
+        endTile.y + 1 < this.columns &&
+        this.tiles[endTile.y + 1][endTile.x].dist === -1 &&
+        this.tiles[endTile.y + 1][endTile.x].top
+      ) {
+        await this.assignDistance(this.tiles[endTile.y + 1][endTile.x], dist + 1);
+      }
+      if (
+        endTile.lft &&
+        endTile.x - 1 >= 0 &&
+        this.tiles[endTile.y][endTile.x - 1].dist === -1 &&
+        this.tiles[endTile.y][endTile.x - 1].rgt
+      ) {
+        await this.assignDistance(this.tiles[endTile.y][endTile.x - 1], dist + 1);
+      }
+    }
   }
 
   async depthFirstSearch(
@@ -197,6 +254,24 @@ export class MazeTraversalComponent implements OnInit {
       return true;
     }
     return false;
+  }
+
+  setColor(tile: Tile): string {
+    if (tile.dist >= 0) {
+      if (tile.dist < (this.maxDist / 4)) {
+        return Color.lightgreen;
+      } else if (tile.dist >= (this.maxDist / 4) && tile.dist < (this.maxDist / 2)) {
+        return Color.lighblue;
+      } else if (tile.dist >= (this.maxDist / 2) && tile.dist < ((this.maxDist * 3) / 4)) {
+        return Color.lightviolet;
+      } else if (tile.dist >= ((this.maxDist * 3) / 4)){
+        return Color.lightpink;
+      }
+    } else {
+      if (tile.dist === -1) {
+        return Color.gray;
+      }
+    }
   }
 
   async delay(ms): Promise<any> {

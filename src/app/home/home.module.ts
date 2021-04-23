@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
     MatSidenavModule,
     MatGridListModule,
     HomeRoutingModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [],
   bootstrap: [HomeComponent],
