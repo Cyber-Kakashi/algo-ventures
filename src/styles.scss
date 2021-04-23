@@ -1,3 +1,4 @@
+@import '~@angular/material/_theming.scss';
 @import "~bootstrap/dist/css/bootstrap.min.css";
 @import "./global.scss";
 @import "./app.theme.scss";
@@ -39,3 +40,9 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+$my-app-primary: mat-palette($mat-grey, 100);
+$my-app-accent: mat-palette($mat-grey, 500);
+$my-app-warn: mat-palette($mat-grey, 900);
+$my-app-theme: mat-light-theme($my-app-primary, $my-app-accent, $my-app-warn);
+@include angular-material-theme($my-app-theme);

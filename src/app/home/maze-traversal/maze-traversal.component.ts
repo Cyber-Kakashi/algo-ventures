@@ -30,14 +30,24 @@ export class MazeTraversalComponent implements OnInit {
   startTile: Tile;
   endTile: Tile;
   count = 0;
-  speed = 5;
+  speed = 10;
+  inProcess = false;
   constructor() {}
 
   ngOnInit(): void {
     this.resetGrid();
   }
 
+  processStart(): void {
+    this.inProcess = true;
+  }
+
+  processEnd(): void {
+    this.inProcess = false;
+  }
+
   resetGrid(): void {
+    this.processStart();
     let i = 0;
     let j = 0;
     this.tiles = [];
@@ -60,12 +70,13 @@ export class MazeTraversalComponent implements OnInit {
     }
     this.startTile = undefined;
     this.endTile = undefined;
+    this.processEnd();
   }
 
   seTtartTile(tile: Tile): void {
     if (this.startTile?.x === tile.x && this.startTile?.y === tile.y) {
     } else {
-      if (tile.color === Color.gray) {
+      if (tile.color === Color.gray  && !this.inProcess) {
         this.startTile ? (this.startTile.color = Color.gray) : console.log();
         tile.color = Color.green;
         this.startTile = tile;
@@ -77,7 +88,7 @@ export class MazeTraversalComponent implements OnInit {
     event.preventDefault();
     if (this.endTile?.x === tile.x && this.endTile?.y === tile.y) {
     } else {
-      if (tile.color === Color.gray) {
+      if (tile.color === Color.gray && !this.inProcess) {
         this.endTile ? (this.endTile.color = Color.gray) : console.log();
         tile.color = Color.red;
         this.endTile = tile;
@@ -86,10 +97,14 @@ export class MazeTraversalComponent implements OnInit {
   }
 
   async startGame(): Promise<any> {
-    if (this.startTile && this.endTile) {
-      await this.drawMaze(this.startTile, this.endTile);
-      this.startTile.color = Color.green;
-      this.endTile.color = Color.red;
+    if (!this.inProcess) {
+      this.processStart();
+      if (this.startTile && this.endTile) {
+        await this.drawMaze(this.startTile, this.endTile);
+        this.startTile.color = Color.green;
+        this.endTile.color = Color.red;
+      }
+      this.processEnd();
     }
   }
 

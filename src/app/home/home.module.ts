@@ -7,14 +7,18 @@ import { MazeTraversalComponent } from './maze-traversal/maze-traversal.componen
 
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatSliderModule } from '@angular/material/slider';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [HomeComponent, MazeTraversalComponent],
   imports: [
     CommonModule,
+    MatSliderModule,
     MatSidenavModule,
     MatGridListModule,
     HomeRoutingModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [HomeComponent],
