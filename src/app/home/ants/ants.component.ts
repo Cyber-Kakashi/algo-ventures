@@ -49,7 +49,7 @@ export class AntsComponent implements OnInit, OnDestroy, AfterViewInit {
   play(event: MouseEvent): void {
     this.screenX = event.screenX;
     this.screenY = event.screenY;
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 50; i++) {
     const ant = new Ant(this.ctx);
     this.ants = this.ants.concat(ant);
     }

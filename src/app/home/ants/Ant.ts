@@ -25,14 +25,12 @@ export class Ant {
     this.y += this.dy;
     if (this.x > window.innerWidth - 70) {
       this.dx = -this.dx;
+    } else if (this.x < 0) {
+      this.dx = -this.dx;
     }
     if (this.y > window.innerHeight - 55) {
       this.dy = -this.dy;
-    }
-    if (this.x < 0) {
-      this.dx = -this.dx;
-    }
-    if (this.y < 0) {
+    } else if (this.y < 0) {
       this.dy = -this.dy;
     }
     this.draw();
