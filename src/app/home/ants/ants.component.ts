@@ -31,7 +31,7 @@ export class AntsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.ngZone.runOutsideAngular(() => this.tick());
     setInterval(() => {
       this.tick();
-    }, 22);
+    }, 1);
   }
   ngAfterViewInit(): void {
     this.ctx.canvas.width = (window.innerWidth * 96) / 100;
@@ -49,9 +49,9 @@ export class AntsComponent implements OnInit, OnDestroy, AfterViewInit {
   play(event: MouseEvent): void {
     this.screenX = event.screenX;
     this.screenY = event.screenY;
-    for (let i = 0; i < 100; i++) {
-      const ant = new Ant(this.ctx);
-      this.ants = this.ants.concat(ant);
+    for (let i = 0; i < 10; i++) {
+    const ant = new Ant(this.ctx);
+    this.ants = this.ants.concat(ant);
     }
   }
 
