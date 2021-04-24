@@ -7,12 +7,23 @@
   left: 0;
   right: 0;
   mat-sidenav {
-    background-color: black;
+    background-color: var(--black);
   }
 }
 
 .cntnr {
   display: flex;
+}
+
+.nav-links {
+  background-color: var(--white);
+  width: 100%;
+  color: var(--black);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.nav-links:hover {
 }
 
 .nav-btn {
