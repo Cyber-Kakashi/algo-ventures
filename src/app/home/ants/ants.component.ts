@@ -20,8 +20,6 @@ export class AntsComponent implements OnInit, OnDestroy, AfterViewInit {
   requestId;
   interval;
   ants: Ant[] = [];
-  screenX: number;
-  screenY: number;
 
   constructor(private ngZone: NgZone) {}
 
@@ -46,19 +44,24 @@ export class AntsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.requestId = requestAnimationFrame(() => this.tick);
   }
 
-  play(event: MouseEvent): void {
-    this.screenX = event.screenX;
-    this.screenY = event.screenY;
-    for (let i = 0; i < 50; i++) {
-    const ant = new Ant(this.ctx);
-    this.ants = this.ants.concat(ant);
+  play(): void {
+    if (!this.ants.length) {
+      console.log('ant created');
+      const ant = new Ant(this.ctx);
+      this.ants = this.ants.concat(ant);
     }
   }
 
   gameOver(event): void {
     event.preventDefault();
+    this.ants = [];
     clearInterval(this.interval);
     cancelAnimationFrame(this.requestId);
+  }
+
+  onResize(event): void {
+    this.ctx.canvas.width = (window.innerWidth * 96) / 100;
+    this.ctx.canvas.height = (window.innerHeight * 96) / 100;
   }
 
   ngOnDestroy(): void {

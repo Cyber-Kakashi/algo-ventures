@@ -2,6 +2,7 @@
   <canvas
     (contextmenu)="gameOver($event)"
     (click)="play($event)"
+    (window:resize)="onResize($event)"
     class="canvas"
     #canvas
   ></canvas>
