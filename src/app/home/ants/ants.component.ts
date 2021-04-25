@@ -59,7 +59,7 @@ export class AntsComponent implements OnInit, OnDestroy, AfterViewInit {
     cancelAnimationFrame(this.requestId);
   }
 
-  onResize(event): void {
+  onResize(): void {
     this.ctx.canvas.width = (window.innerWidth * 96) / 100;
     this.ctx.canvas.height = (window.innerHeight * 96) / 100;
   }
