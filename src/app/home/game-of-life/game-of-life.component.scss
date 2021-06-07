@@ -1,0 +1,30 @@
+.title {
+  background-color: var(--white);
+  border-bottom: 5px solid var(--black);
+  color: var(--black);
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.grid-container {
+  background-color: black;
+}
+
+.grid-list {
+  margin-bottom: 0px;
+}
+
+.tile-border {
+  border: 3px solid;
+  border-radius: 1px;
+}
+
+.tile {
+  background-color: white;
+  border: 1px solid black;
+}
+
+.black {
+  background-color: black !important;
+}

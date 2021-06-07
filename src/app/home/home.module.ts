@@ -10,9 +10,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSliderModule } from '@angular/material/slider';
 import { FormsModule } from '@angular/forms';
 import { AntsComponent } from './ants/ants.component';
+import { GameOfLifeComponent } from './game-of-life/game-of-life.component';
 
 @NgModule({
-  declarations: [HomeComponent, MazeTraversalComponent, AntsComponent],
+  declarations: [HomeComponent, MazeTraversalComponent, AntsComponent, GameOfLifeComponent],
   imports: [
     CommonModule,
     MatSliderModule,

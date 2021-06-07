@@ -19,4 +19,8 @@ export class HomeComponent implements OnInit {
   maze(): void {
     this.router.navigate(['/home/maze']);
   }
+
+  life(): void {
+    this.router.navigate(['/home/life']);
+  }
 }
