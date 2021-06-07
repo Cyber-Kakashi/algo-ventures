@@ -45,7 +45,7 @@ export class AntsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   play(): void {
-    if (!this.ants.length) {
+    if (this.ants.length < 15) {
       console.log('ant created');
       const ant = new Ant(this.ctx);
       this.ants = this.ants.concat(ant);
