@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 
 export interface Tile {
   cols: number;
@@ -21,7 +21,7 @@ export enum Color {
   templateUrl: './game-of-life.component.html',
   styleUrls: ['./game-of-life.component.scss']
 })
-export class GameOfLifeComponent implements OnInit {
+export class GameOfLifeComponent implements OnInit, OnDestroy {
 
   columns = 35;
   rows = 80;
@@ -30,49 +30,78 @@ export class GameOfLifeComponent implements OnInit {
   list = [];
   count = 0;
   speed = 60;
-  generation = 0;
-  run = true;
+  generation = 1;
+  population = 0;
+  totalPopulation = 0;
+  death = 0;
+  birth = 0;
+  intervalId: number;
+  Math = Math;
 
-  constructor(private cd: ChangeDetectorRef) {}
+  ngOnDestroy(): void {
+    this.stopGame();
+  }
 
   ngOnInit(): void {
     this.resetGrid();
   }
 
+  randomGrid(): void {
+    this.resetGrid(1);
+  }
+
   // Remember that x => j and y => i
-  resetGrid(): void {
+  resetGrid(randomize = 0): void {
+    this.population = 0;
     this.tiles = [];
     for (let i = 0; i < this.columns; i++) {
       for (let j = 0; j < this.rows; j++) {
         this.list.push(
-          this.createNewTile(0)
+          this.createNewTile(randomize ? Math.random() < 0.5 ? 0 : 1 : 0)
         );
       }
       this.tiles.push(this.list);
       this.list = [];
     }
     this.newTiles = undefined;
+    this.death = 0;
+    this.birth = 0;
+    this.generation = 1;
+    this.totalPopulation = this.population;
   }
 
   async startGame(): Promise<any> {
-    this.generation = 0;
-    while (this.generation < 100) {
-      this.newTiles = this.deepCloneArray(this.tiles);
-      for (let i = 0; i < this.columns; i++) {
-        for (let j = 0; j < this.rows; j++) {
-          if (!this.newTiles[i][j].val && this.totalNeighbors(i, j) === 3) {
-            this.newTiles[i][j].val = 1;
-          }else if (this.newTiles[i][j].val && (this.totalNeighbors(i, j) > 3 || this.totalNeighbors(i, j) < 2)) {
-            this.newTiles[i][j].val = 0;
+    this.generation = 1;
+    this.totalPopulation = this.population;
+    if (!this.intervalId) {
+      console.log('Game started');
+      this.intervalId = setInterval(() => {
+        this.newTiles = this.deepCloneArray(this.tiles);
+        for (let i = 0; i < this.columns; i++) {
+          for (let j = 0; j < this.rows; j++) {
+            if (!this.newTiles[i][j].val && this.totalNeighbors(i, j) === 3) {
+              this.newTiles[i][j].val = 1;
+              this.birth += 1;
+              this.population += 1;
+            }else if (this.newTiles[i][j].val && (this.totalNeighbors(i, j) > 3 || this.totalNeighbors(i, j) < 2)) {
+              this.newTiles[i][j].val = 0;
+              this.death += 1;
+              this.population -= 1;
+            }
           }
         }
-      }
-      this.generation += 1;
-      await this.delay(0);
-      this.tiles = this.deepCloneArray(this.newTiles);
+        this.totalPopulation += this.population;
+        this.generation += 1;
+        this.tiles = this.deepCloneArray(this.newTiles);
+      }, 0);
     }
   }
 
+  stopGame(): void {
+    console.log('Game stopped');
+    clearInterval(this.intervalId);
+    this.intervalId = null;
+  }
 
   totalNeighbors(x: number, y: number): number {
     let nbrs = 0;
@@ -98,6 +127,7 @@ export class GameOfLifeComponent implements OnInit {
   }
 
   createNewTile(val): Tile {
+    if (val) { this.population += 1; }
     return {
       cols: 1,
       rows: 1,
@@ -106,7 +136,13 @@ export class GameOfLifeComponent implements OnInit {
   }
 
   setGame(tile: Tile): void {
-    tile.val = 1;
+    if (tile.val) {
+      this.population -= 1;
+      tile.val = 0;
+    } else {
+      this.population += 1;
+      tile.val = 1;
+    }
   }
 
   async delay(ms: number): Promise<any> {
