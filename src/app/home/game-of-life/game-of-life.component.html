@@ -3,27 +3,15 @@
   <br />
   <div class="row">
     <div class="col-lg-6">
-      <button
-        mat-button
-        class="regular-button"
-        (click)="startGame()"
-      >
+      <button mat-button class="regular-button" (click)="startGame()">
         START</button
       >&nbsp;
-      <button
-        mat-button
-        class="regular-button"
-        (click)="stopGame()"
-      >
+      <button mat-button class="regular-button" (click)="stopGame()">
         STOP</button
       >&nbsp;
-      <button
-      mat-button
-      class="regular-button"
-      (click)="randomGrid()"
-    >
-      Randomize Grid</button
-    >
+      <button mat-button class="regular-button" (click)="randomGrid()">
+        Randomize Grid
+      </button>
     </div>
   </div>
 </div>
@@ -51,6 +39,9 @@
 </div>
 
 <div class="col-lg-12">
-  Population: {{ population }}, Death: {{death}}, Birth: {{birth}}, Generation: {{generation}}<br>
-  Average Population: {{Math.floor(totalPopulation / generation)}}, Average Death: {{Math.floor(death / generation)}}, Average Birth: {{Math.floor(birth / generation)}}
+  Population: {{ population }}, Death: {{ death }}, Birth: {{ birth }},
+  Generation: {{ generation }}<br />
+  Average Population: {{ Math.floor(totalPopulation / generation) }}, Average
+  Death: {{ Math.floor(death / generation) }}, Average Birth:
+  {{ Math.floor(birth / generation) }}
 </div>

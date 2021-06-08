@@ -56,9 +56,16 @@ export class Ant {
       this.count = 1;
       for (let i = 0; i < this.homePheramoneTrail.length; i++) {
         if (this.homePheramoneTrail[i].strength >= 20) {
-          this.ctx.fillStyle = `#4deaff${Number(this.homePheramoneTrail[i].strength).toString(16)}`;
+          this.ctx.fillStyle = `#4deaff${Number(
+            this.homePheramoneTrail[i].strength
+          ).toString(16)}`;
           this.homePheramoneTrail[i].strength -= this.evaporationRate;
-          this.ctx.fillRect(this.homePheramoneTrail[i].x, this.homePheramoneTrail[i].y, 3, 3);
+          this.ctx.fillRect(
+            this.homePheramoneTrail[i].x,
+            this.homePheramoneTrail[i].y,
+            3,
+            3
+          );
         } else {
           this.homePheramoneTrail.splice(i, 1);
         }
@@ -66,8 +73,15 @@ export class Ant {
     } else {
       for (let i = 0; i < this.homePheramoneTrail.length; i++) {
         if (this.homePheramoneTrail[i].strength >= 20) {
-          this.ctx.fillStyle = `#4deaff${Number(this.homePheramoneTrail[i].strength).toString(16)}`;
-          this.ctx.fillRect(this.homePheramoneTrail[i].x, this.homePheramoneTrail[i].y, 3, 3);
+          this.ctx.fillStyle = `#4deaff${Number(
+            this.homePheramoneTrail[i].strength
+          ).toString(16)}`;
+          this.ctx.fillRect(
+            this.homePheramoneTrail[i].x,
+            this.homePheramoneTrail[i].y,
+            3,
+            3
+          );
         } else {
           this.homePheramoneTrail.splice(i, 1);
         }

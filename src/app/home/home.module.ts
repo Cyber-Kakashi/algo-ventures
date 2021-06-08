@@ -13,7 +13,12 @@ import { AntsComponent } from './ants/ants.component';
 import { GameOfLifeComponent } from './game-of-life/game-of-life.component';
 
 @NgModule({
-  declarations: [HomeComponent, MazeTraversalComponent, AntsComponent, GameOfLifeComponent],
+  declarations: [
+    HomeComponent,
+    MazeTraversalComponent,
+    AntsComponent,
+    GameOfLifeComponent,
+  ],
   imports: [
     CommonModule,
     MatSliderModule,

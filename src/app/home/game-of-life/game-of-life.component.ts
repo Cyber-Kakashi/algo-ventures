@@ -19,10 +19,9 @@ export enum Color {
 @Component({
   selector: 'app-game-of-life',
   templateUrl: './game-of-life.component.html',
-  styleUrls: ['./game-of-life.component.scss']
+  styleUrls: ['./game-of-life.component.scss'],
 })
 export class GameOfLifeComponent implements OnInit, OnDestroy {
-
   columns = 35;
   rows = 80;
   tiles: Array<Array<Tile>> = [];
@@ -57,7 +56,7 @@ export class GameOfLifeComponent implements OnInit, OnDestroy {
     for (let i = 0; i < this.columns; i++) {
       for (let j = 0; j < this.rows; j++) {
         this.list.push(
-          this.createNewTile(randomize ? Math.random() < 0.5 ? 0 : 1 : 0)
+          this.createNewTile(randomize ? (Math.random() < 0.5 ? 0 : 1) : 0)
         );
       }
       this.tiles.push(this.list);
@@ -83,7 +82,10 @@ export class GameOfLifeComponent implements OnInit, OnDestroy {
               this.newTiles[i][j].val = 1;
               this.birth += 1;
               this.population += 1;
-            }else if (this.newTiles[i][j].val && (this.totalNeighbors(i, j) > 3 || this.totalNeighbors(i, j) < 2)) {
+            } else if (
+              this.newTiles[i][j].val &&
+              (this.totalNeighbors(i, j) > 3 || this.totalNeighbors(i, j) < 2)
+            ) {
               this.newTiles[i][j].val = 0;
               this.death += 1;
               this.population -= 1;
@@ -106,8 +108,12 @@ export class GameOfLifeComponent implements OnInit, OnDestroy {
   totalNeighbors(x: number, y: number): number {
     let nbrs = 0;
     for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1 ; j++) {
-        if (this.tiles[(x + i + this.columns) % this.columns][(y + j + this.rows) % this.rows].val) {
+      for (let j = -1; j <= 1; j++) {
+        if (
+          this.tiles[(x + i + this.columns) % this.columns][
+            (y + j + this.rows) % this.rows
+          ].val
+        ) {
           nbrs += 1;
         }
       }
@@ -127,7 +133,9 @@ export class GameOfLifeComponent implements OnInit, OnDestroy {
   }
 
   createNewTile(val): Tile {
-    if (val) { this.population += 1; }
+    if (val) {
+      this.population += 1;
+    }
     return {
       cols: 1,
       rows: 1,
