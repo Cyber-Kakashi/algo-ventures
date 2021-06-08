@@ -28,7 +28,6 @@ export class GameOfLifeComponent implements OnInit, OnDestroy {
   newTiles: Array<Array<Tile>> = [];
   list = [];
   count = 0;
-  speed = 60;
   generation = 1;
   population = 0;
   totalPopulation = 0;
