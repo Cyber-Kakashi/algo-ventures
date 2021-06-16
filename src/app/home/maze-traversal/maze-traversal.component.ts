@@ -46,10 +46,15 @@ export class MazeTraversalComponent implements OnInit {
   maxDist: number;
   statisticsTile: Tile;
   inProcess = false;
+  showHelp = true;
 
   constructor(private cd: ChangeDetectorRef) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  async proceed(): Promise<any> {
+    this.showHelp = false;
+    await this.delay(10);
     this.resetGrid();
   }
 

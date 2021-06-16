@@ -1,66 +1,80 @@
-<div class="col-lg-12">
+<div *ngIf="showHelp" class="col-lg-12">
   <div class="row title">THE MAZE</div>
-  <br />
-  <div class="row">
-    <div class="col-lg-6">
-      <button
-        mat-button
-        class="regular-button"
-        [disabled]="inProcess"
-        (click)="startGame()"
-      >
-        START</button
-      >&nbsp;
-      <button
-        mat-button
-        class="regular-button"
-        [disabled]="inProcess"
-        (click)="resetGrid()"
-      >
-        RESET</button
-      >&nbsp;
-    </div>
-    <div class="col-lg-6">
-      <div class="speed-container">
-        <mat-slider
-          class="speed-slider"
-          max="60"
-          min="1"
-          [(ngModel)]="speed"
-        ></mat-slider>
-        Speed: {{ speed }}
+  Yeah.. I get it that was fun at the beginning.. but I want something more,
+  something better! <br />
+  So, how about you get lost in the randomized DFS and let me find the path for
+  you? <br />
+  left-click to mark the start(green), right-click to mark the end(red). I leave
+  the rest to you fellow adventurer! <br />
+
+  <button mat-button class="regular-button" (click)="proceed()">PROCEED</button>
+</div>
+
+<div *ngIf="!showHelp">
+  <div class="col-lg-12">
+    <div class="row title">THE MAZE</div>
+    <br />
+    <div class="row">
+      <div class="col-lg-6">
+        <button
+          mat-button
+          class="regular-button"
+          [disabled]="inProcess"
+          (click)="startGame()"
+        >
+          START</button
+        >&nbsp;
+        <button
+          mat-button
+          class="regular-button"
+          [disabled]="inProcess"
+          (click)="resetGrid()"
+        >
+          RESET</button
+        >&nbsp;
+      </div>
+      <div class="col-lg-6">
+        <div class="speed-container">
+          <mat-slider
+            class="speed-slider"
+            max="60"
+            min="1"
+            [(ngModel)]="speed"
+          ></mat-slider>
+          Speed: {{ speed }}
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="col-lg-12">
-  <div class="grid-container">
-    <mat-grid-list
-      class="grid-list"
-      *ngFor="let list of tiles"
-      gutterSize="0px"
-      [cols]="rows"
-      rowHeight="17px"
-    >
-      <mat-grid-tile
-        *ngFor="let tile of list"
-        [colspan]="tile.cols"
-        [rowspan]="tile.rows"
-        class="tile-border"
-        [class.top-border]="tile.top"
-        [class.btm-border]="tile.btm"
-        [class.rgt-border]="tile.rgt"
-        [class.lft-border]="tile.lft"
-        (click)="setStartTile(tile)"
-        (contextmenu)="setEndTile(tile, $event)"
-        [style.background]="setColor(tile)"
+  <div class="col-lg-12">
+    <div class="grid-container">
+      <mat-grid-list
+        class="grid-list"
+        *ngFor="let list of tiles"
+        gutterSize="0px"
+        [cols]="rows"
+        rowHeight="17px"
       >
-      </mat-grid-tile>
-    </mat-grid-list>
+        <mat-grid-tile
+          *ngFor="let tile of list"
+          [colspan]="tile.cols"
+          [rowspan]="tile.rows"
+          class="tile-border"
+          [class.top-border]="tile.top"
+          [class.btm-border]="tile.btm"
+          [class.rgt-border]="tile.rgt"
+          [class.lft-border]="tile.lft"
+          (click)="setStartTile(tile)"
+          (contextmenu)="setEndTile(tile, $event)"
+          [style.background]="setColor(tile)"
+        >
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
   </div>
-</div>
 
-<div class="col-lg-12">
-  ({{ startTile.y }}, {{ startTile.x }}) - ({{ endTile.y }}, {{ endTile.x }})
+  <div class="col-lg-12">
+    ({{ startTile.y }}, {{ startTile.x }}) - ({{ endTile.y }}, {{ endTile.x }})
+  </div>
 </div>

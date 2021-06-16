@@ -24,8 +24,7 @@ export class AntsComponent implements OnInit, OnDestroy {
 
   constructor(private ngZone: NgZone) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   async proceed(): Promise<any> {
     this.showHelp = false;
