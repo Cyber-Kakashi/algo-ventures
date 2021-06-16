@@ -35,17 +35,27 @@ export class GameOfLifeComponent implements OnInit, OnDestroy {
   birth = 0;
   intervalId: number;
   Math = Math;
+  showHelp = true;
 
   ngOnDestroy(): void {
     this.stopGame();
   }
 
-  ngOnInit(): void {
+  async proceed(): Promise<any> {
+    this.showHelp = false;
+    await this.delay(10);
     this.resetGrid();
   }
 
+  ngOnInit(): void {}
+
   randomGrid(): void {
     this.resetGrid(1);
+  }
+
+  resetGame(): void {
+    this.stopGame();
+    this.resetGrid();
   }
 
   // Remember that x => j and y => i
@@ -94,6 +104,10 @@ export class GameOfLifeComponent implements OnInit, OnDestroy {
         this.totalPopulation += this.population;
         this.generation += 1;
         this.tiles = this.deepCloneArray(this.newTiles);
+        if (this.population === 0) {
+          this.stopGame();
+          this.resetGame();
+        }
       }, 0);
     }
   }
