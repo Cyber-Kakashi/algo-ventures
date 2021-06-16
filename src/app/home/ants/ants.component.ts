@@ -14,26 +14,34 @@ import { Ant } from './Ant';
   templateUrl: './ants.component.html',
   styleUrls: ['./ants.component.scss'],
 })
-export class AntsComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('canvas', { static: true }) canvas: ElementRef<HTMLCanvasElement>;
+export class AntsComponent implements OnInit, OnDestroy {
+  @ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
   ctx: CanvasRenderingContext2D;
   requestId;
   interval;
   ants: Ant[] = [];
+  showHelp = true;
 
   constructor(private ngZone: NgZone) {}
 
   ngOnInit(): void {
+  }
+
+  async proceed(): Promise<any> {
+    this.showHelp = false;
+    await this.delay(10);
+    this.initialize();
+    this.ctx.canvas.width = (window.innerWidth * 96) / 100;
+    this.ctx.canvas.height = (window.innerHeight * 96) / 100;
+  }
+
+  initialize(): void {
     this.ctx = this.canvas.nativeElement.getContext('2d');
     this.ctx.fillStyle = 'red';
     this.ngZone.runOutsideAngular(() => this.tick());
     setInterval(() => {
       this.tick();
     }, 1);
-  }
-  ngAfterViewInit(): void {
-    this.ctx.canvas.width = (window.innerWidth * 96) / 100;
-    this.ctx.canvas.height = (window.innerHeight * 96) / 100;
   }
 
   tick(): void {
@@ -67,5 +75,9 @@ export class AntsComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnDestroy(): void {
     clearInterval(this.interval);
     cancelAnimationFrame(this.requestId);
+  }
+
+  async delay(ms): Promise<any> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 }

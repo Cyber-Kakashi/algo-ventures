@@ -35,3 +35,17 @@
 .pd-lt-12 {
   padding-left: 12px;
 }
+
+.title {
+  background-color: var(--white);
+  border-bottom: 5px solid var(--black);
+  color: var(--black);
+  font-size: 32px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.tile-border {
+  border: 3px solid;
+  border-radius: 1px;
+}

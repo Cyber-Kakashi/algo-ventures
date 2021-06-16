@@ -1,4 +1,23 @@
-<div class="col-lg-12 canvas-area">
+<div *ngIf="showHelp" class="col-lg-12">
+  <div class="row title">THE ANTS</div> <br>
+  Hello fellow user! <br>
+  This is a visualization tool that works on the basic principle of randomized motion of ants. <br>
+
+  Just left-click on the screen and you will see. Right-click to unsee.
+  Well of course you have to proceed further to see at all. <br>
+  Hmmm, I wonder what happens if you left-click multiple times..
+  Is there a way to explore?<br>
+  <button
+        mat-button
+        class="regular-button"
+        (click)="proceed()"
+      >
+        PROCEED</button
+      >
+
+
+</div>
+<div *ngIf="!showHelp" class="col-lg-12 canvas-area">
   <canvas
     (contextmenu)="gameOver($event)"
     (click)="play()"
