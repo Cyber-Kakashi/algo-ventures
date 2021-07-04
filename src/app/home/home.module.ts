@@ -11,6 +11,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { FormsModule } from '@angular/forms';
 import { AntsComponent } from './ants/ants.component';
 import { GameOfLifeComponent } from './game-of-life/game-of-life.component';
+import { FractalTreeComponent } from './fractal-tree/fractal-tree.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { GameOfLifeComponent } from './game-of-life/game-of-life.component';
     MazeTraversalComponent,
     AntsComponent,
     GameOfLifeComponent,
+    FractalTreeComponent,
   ],
   imports: [
     CommonModule,
