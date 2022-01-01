@@ -11,13 +11,22 @@ export class FractalTreeComponent implements OnInit {
   ctx: CanvasRenderingContext2D;
   requestId;
   interval;
-  tree: Tree[] = [];
+  tree: Tree;
   showHelp = true;
   delta = 1;
 
   constructor(private ngZone: NgZone) {}
 
   ngOnInit(): void {}
+
+
+  play(): void {
+    this.delta = this.delta - 0.1;
+    console.log('ant created');
+    const tree = new Tree();
+    tree.draw(400, 600, 120, 0, 10, this.ctx);
+  
+  }
 
   async proceed(): Promise<any> {
     this.showHelp = false;
@@ -27,29 +36,8 @@ export class FractalTreeComponent implements OnInit {
     this.ctx.canvas.height = (window.innerHeight * 96) / 100;
   }
 
-  play(): void {
-    this.delta = this.delta - 0.1;
-    if (this.tree.length < 100) {
-      console.log('ant created');
-      const tree = new Tree(this.ctx, 80, this.delta);
-      this.tree = this.tree.concat(tree);
-    }
-  }
-
   initialize(): void {
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.ngZone.runOutsideAngular(() => this.tick());
-    setInterval(() => {
-      this.tick();
-    }, 1);
-  }
-
-  tick(): void {
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    this.tree.forEach((tree: Tree) => {
-      tree.draw();
-    });
-    this.requestId = requestAnimationFrame(() => this.tick);
   }
 
   onResize(): void {
