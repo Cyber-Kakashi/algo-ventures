@@ -4,6 +4,7 @@ import { HomeComponent } from './home.component';
 import { MazeTraversalComponent } from './maze-traversal/maze-traversal.component';
 import { AntsComponent } from './ants/ants.component';
 import { GameOfLifeComponent } from './game-of-life/game-of-life.component';
+import { FractalTreeComponent } from './fractal-tree/fractal-tree.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
       {
         path: 'life',
         component: GameOfLifeComponent,
+      },
+      {
+        path: 'tree',
+        component: FractalTreeComponent,
       },
     ],
   },

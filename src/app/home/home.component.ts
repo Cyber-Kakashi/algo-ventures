@@ -23,4 +23,12 @@ export class HomeComponent implements OnInit {
   life(): void {
     this.router.navigate(['/home/life']);
   }
+  
+  tree(): void {
+    this.router.navigate(['/home/tree']);
+  }
+
+
+
+  
 }

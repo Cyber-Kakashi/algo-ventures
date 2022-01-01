@@ -1,5 +1,5 @@
 import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Tree } from './trees';
+import { Tree } from './Trees';
 
 @Component({
   selector: 'app-fractal-tree',
@@ -29,9 +29,9 @@ export class FractalTreeComponent implements OnInit {
 
   play(): void {
     this.delta = this.delta - 0.1;
-    if (this.tree.length < 15) {
+    if (this.tree.length < 100) {
       console.log('ant created');
-      const tree = new Tree(this.ctx, 70, this.delta, x, y);
+      const tree = new Tree(this.ctx, 80, this.delta);
       this.tree = this.tree.concat(tree);
     }
   }
