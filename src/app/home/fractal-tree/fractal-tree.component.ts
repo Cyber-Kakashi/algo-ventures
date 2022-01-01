@@ -23,6 +23,7 @@ export class FractalTreeComponent implements OnInit {
   play(): void {
     this.delta = this.delta - 0.1;
     console.log('ant created');
+    // ToDo: add the tree sizing parameter to the tree constructor and make it a value selector. Dynamic
     const tree = new Tree();
     tree.draw(400, 600, 120, 0, 10, this.ctx);
   

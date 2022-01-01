@@ -1,6 +1,9 @@
 export class Tree {
 
-  constructor() {
+  treeSize;
+
+  constructor(size = 0.8) {
+    this.treeSize = size;
   }
 
   async draw(startX, startY, len, angle, branchWidth, ctx) {
@@ -28,8 +31,8 @@ export class Tree {
 
     await this.delay(10);
 
-    await this.draw(0, -len, len*0.8, angle-15, branchWidth*0.8, ctx);
-    await this.draw(0, -len, len*0.8, angle+15, branchWidth*0.8, ctx);
+    await this.draw(0, -len, len*this.treeSize, angle-15, branchWidth*this.treeSize, ctx);
+    await this.draw(0, -len, len*this.treeSize, angle+15, branchWidth*this.treeSize, ctx);
 
     ctx.restore();
   }
